@@ -1,0 +1,84 @@
+---
+title: "20BRS1176_George Mathew EDA LAB2 L55+L56 slot"
+output: html_notebook
+---
+Question 1. Perform multi linear regression on mtcars dataset.
+```{r}
+data("mtcars")
+dat=mtcars[,c("mpg","disp","hp","wt")]
+head(dat)
+```
+```{r}
+library(scatterplot3d)
+attach(mtcars)
+scatterplot3d(wt,disp,mpg,main="3D Scatterplot")
+```
+
+```{r}
+mod=lm(mpg~wt+disp)
+mod
+scr = scatterplot3d(wt,disp,mpg,main="3D 
+scatterplot")
+scr$plane3d(mod)
+```
+
+Question 2: In a random sample of 6 students each from the CSE major branch 
+of 2014 and 2020, each student was asked about their salary package 
+after they completed graduation. We wanted to know if the typical 
+salary offered after graduation had changed over the past 6 years.
+```{r}
+b2014=c(667,859,1129,500,1098,1036) 
+b2020=c(920,1060,800,645,869,1101)
+x1b=mean(b2014)
+x2b=mean(b2020)
+s1=sd(b2014)
+s2=sd(b2020)
+n1=length(b2014)
+n2=length(b2020)
+```
+
+```{r}
+diff_in_means=x1b-x2b
+SE_diff_mean=sqrt((s1^2/n1)+(s2^2/n2))
+t_stat=diff_in_means/SE_diff_mean
+t_stat
+pval=2*pt(t_stat,df=n1+n2-2)
+pval
+```
+Interpretation:
+Hence, we got the p value as 0.89 which is greater than the default assumption. 
+By this we can say that there is not much difference between the mean pay 
+offered to students in 2014 and 2020.
+
+
+Question 3: Testing of hypothesis(z proportion)
+A. Out of a sample of 1000 people, 300 watched movies in theatres 
+before the pandemic. In a sample of 1200 persons, it was discovered 
+that 350 of them watched movies in theatres after the outbreak. We 
+wish to investigate whether there is a decline in theatre attendance 
+following the pandemic at the 5% level of significance.
+```{r}
+prop.test(x=c(300,350), n=c(1000,1200),,alternative = "two.sided")
+```
+Interpretation:
+x-squared values is 0.144 and p-values is 0.7042. the alternate hypothesis is that 
+there is no decline in theatre attendance. Since the obtained p-value is 0.7042 is 
+less than the assumed level of significance 0.05, we can reject the hypothesis.
+
+B.Perform two-proportion Z-Test
+```{r}
+prop.test(x=c(800,900),n=c(1000,1200),alternative ="greater")
+```
+
+Question 4:Estimate the correlation coefficient using pearson correlation and 
+spearman rank correlation. Solve using manual method and R code.
+
+```{r}
+x <- c(45,50,53,58,60)
+y <- c(9,8,8,7,5)
+#Pearson Method
+cor(x,y,method = "pearson")
+#Spearman Method
+cor(x,y,method = "spearman")
+```
+Manual Calculations:

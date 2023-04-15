@@ -1,0 +1,87 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+# Banking Sector Case Study
+# Question: Understand customer spent an repayment behavior along with evaluating areas of corruption, fraud
+# and collections. also respond to customer requests for them with proactive offers and service. 
+# Perform data pre processing, data manipulation, data modelling, statistical analysis for the  given application
+```
+
+```{r}
+install.packages("gapminder")
+install.packages("tidyverse")
+install.packages("caTools")
+install.packages("ReDaMoR")
+install.packages("visNetwork")
+```
+
+```{r}
+df<-read.csv("/Users/gpega/Downloads/NSE_BANKING_SECTOR.csv")
+head(df)
+```
+
+```{r}
+df<-na.omit(df)
+df<-head(df,500)
+head(df)
+```
+
+```{r}
+library(dplyr)
+summarize(df)
+```
+
+```{r}
+#splitting into training and test data
+library(caTools)# required library for data splition
+split = sample.split(df$X.DELIVERBLE, SplitRatio = 0.8)# returns true if observation goes to the Training set and false if observation goes to the test set.
+training_set = subset(df, split == TRUE)
+test_set = subset(df, split == FALSE)
+head(training_set)
+head(test_set)
+```
+
+```{r}
+library(gapminder)
+library(tidyverse)
+library(ggplot2)
+ggplot(df, aes(TURNOVER,TRADES)) +geom_point()
+```
+
+```{r}
+qf(p=.05, df1=6164, df2=1, lower.tail=FALSE)
+```
+
+```{r}
+#Statistical Analysis
+#logistic regression
+loan_model <- glm(TRADES ~ ., data = training_set, family = binomial)
+```
+
+```{r}
+#Histogram
+hist(df$TRADES)
+```
+
+```{r}
+#Boxplot
+boxplot(df$VOLUME)
+```
+
+```{r}
+#t.test
+t.test(df$X.DELIVERBLE)
+```
+
+```{r}
+#confidence Interval
+t.test(df$TURNOVER,var.equal=TRUE)
+```
+
+```{r}
+#anova
+an=aov(df$OPEN ~ df$HIGH)
+an
+```

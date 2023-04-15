@@ -1,0 +1,153 @@
+---
+title: "20BRS1176_George Mathew EDA LAB G1"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+linear regression, R^2, RSE, t-stats, p-vals, f-stats, residual coefficients
+```{r}
+d1 <- data.frame(X=c(0.01,0.48,0.71,0.95,1.19,0.01,0.48,1.44,0.71,1.96),
+                 Y=c(127.6,124,110.8,103.9,101.5,130,122,92.3,113,83.7))
+d2 <- data.frame(X=c(95.2,85.1,80.6,70.5,60.2,70.2,75.1),
+                 Y=c(85.9,95.2,70.3,65.4,70.5,66,71.1))
+d3 <- data.frame(X=c(88.1,76.5,79.2,85.4,90.2,74.3,67.7),
+                 Y=c(85.9,95.2,70.3,65.4,70.5,66,71.1))
+model1 <- lm(Y~X,data=d1)
+model2 <- lm(Y~X,data=d2)
+model3 <- lm(Y~X, data=d3)
+print(summary(model1))
+print(summary(model2))
+print(summary(model3))
+```
+Question 1: dataset1
+```{r}
+d1
+```
+1. Linear Regression:
+```{r}
+print(model1)
+```
+2. Residual coefficients:
+```{r}
+print(model1$residuals)
+```
+3. R^2
+```{r}
+X=c(0.01,0.48,0.71,0.95,1.19,0.01,0.48,1.44,0.71,1.96)
+Y=c(127.6,124,110.8,103.9,101.5,130,122,92.3,113,83.7)
+Ycap=((-24.83*X)+130.59)
+print(Ycap)
+avgY=mean(Y)
+SSR=sum((Ycap-avgY)^2)
+SST=sum((Y-avgY)^2)
+R2=SSR/SST
+sprintf("The value of R^2 is: %f",R2)
+```
+4. RSE
+```{r}
+rmse=sqrt(mean((Y-Ycap)^2))
+sprintf("The value of RMSE is %f",rmse)
+```
+Inference:
+The value of R2 is 0.96 which is close to 1 therefore there is a very high proportion of variability in the above dataset
+
+Question 2: dataset 2
+```{r}
+d2
+```
+1. Linear Regression:
+```{r}
+print(model2)
+```
+2. Residual coefficients:
+```{r}
+print(model2$residuals)
+```
+3. R^2
+```{r}
+X=c(95.2,85.1,80.6,70.5,60.2,70.2,75.1)
+Y=c(85.9,95.2,70.3,65.4,70.5,66,71.1)
+Ycap=((0.7039*X)+20.9261)
+print(Ycap)
+avgY=mean(Y)
+SSR=sum((Ycap-avgY)^2)
+SST=sum((Y-avgY)^2)
+R2=SSR/SST
+sprintf("The value of R^2 is: %f",R2)
+```
+4. RMSE
+```{r}
+rmse=sqrt(mean((Y-Ycap)^2))
+sprintf("The value of RMSE is %f",rmse)
+```
+The value of R2 is 0.512 which is close to 1 therefore there is a medium range of proportion of variability in the above dataset
+
+Question 3: dataset 3
+```{r}
+d3
+```
+1. Linear Regression:
+```{r}
+print(model3)
+```
+2. Residuals
+```{r}
+print(model3$residuals)
+```
+3. R2
+```{r}
+X=c(88.1,76.5,79.2,85.4,90.2,74.3,67.7)
+Y=c(85.9,95.2,70.3,65.4,70.5,66,71.1)
+Ycap=((0.0582*X)+70.2468)
+print(Ycap)
+avgY=mean(Y)
+SSR=sum((Ycap-avgY)^2)
+SST=sum((Y-avgY)^2)
+R2=SSR/SST
+sprintf("The value of R^2 is: %f",R2)
+```
+4. RMSE
+```{r}
+rmse=sqrt(mean((Y-Ycap)^2))
+sprintf("The value of RMSE is %f",rmse)
+```
+INFERENCE:
+The value of R2 is 0.00176 which is close to 0 therefore the R2 value did not explain much of the variability in the outcome from the regression model
+
+Question 4: dataset 4
+```{r}
+library(MASS)
+df=survey
+df=df[complete.cases(df),]
+X=df$Wr.Hnd
+Y=df$Pulse
+d <- data.frame(X,Y)
+d
+```
+1.Linear Regression:
+```{r}
+model4 <- lm(Y~X,data=d)
+print(model4)
+```
+2.Residuals:
+```{r}
+print(residuals(model4))
+```
+3. R2
+```{r}
+Ycap=((-0.08309*X)+75.58608)
+print(Ycap)
+avgY=mean(Y)
+SSR=sum((Ycap-avgY)^2)
+SST=sum((Y-avgY)^2)
+R2=SSR/SST
+print(R2)
+sprintf("The value of R^2 is: %f",R2)
+```
+4. RMSE
+```{r}
+rmse=sqrt(mean((Y-Ycap)^2))
+sprintf("The value of RMSE is %f",rmse)
+```
+INFERENCE:
+The value of R2 is 0.00019 which is close to 0 therefore the R2 value did not explain much of the variability in the outcome from the regression model

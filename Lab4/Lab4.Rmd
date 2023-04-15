@@ -1,0 +1,45 @@
+---
+title: "20BRS1176_EDA_Lab4"
+output: html_notebook
+---
+ANOVA:
+1. Perform Average of 3 on the following Dataset:
+Year:       1    2    3    4    5    6    7    8    9    10     11     12
+Sales:      5.2 4.9  5.5  4.9  5.2  5.7  5.4  5.8  5.9   6      5.2    4.8
+```{r}
+library(zoo)
+year<-c(1:8)
+Sales<-c(5.2,4.9,5.5,4.9,5.2,5.7,5.4,5.8)
+Data<-data.frame(year,Sales)
+rollmean(Sales,3)
+```
+Manual Calculation:
+
+
+
+2. Perform Average of 3 on the following dataset:
+Year:       2003    2004     2005     2006     2007     2008     2009     2010     2011     2012
+Sales:       4        6        5        8        9        5        4        3        7        8
+```{r}
+library(zoo)
+Year<-c(2003:2010)
+SalesMillion<-c(4,6,5,8,9,5,4,3)
+data<-data.frame(Year,SalesMillion)
+rollmean(SalesMillion,3)
+```
+Manual Calculations:
+
+
+3. Implement autocorrelation using R studio:
+Autocorrelation, also known as serial correlation, is a statistical property of a time series data where the current value of a variable is related to its past values. It is a measure of the similarity between a time series and a lagged version of itself over successive time intervals.
+
+In other words, if a time series is autocorrelated, it means that the value of the series at a given point in time is related to the value of the series at a previous point in time. This can be positive or negative, indicating whether the two values tend to move in the same direction (positive autocorrelation) or in opposite directions (negative autocorrelation).
+```{r}
+library(tseries)
+vector1=c(34,56,23,45,21,64,78,90)
+print(acf(vector1,pl=FALSE))
+print(acf(vector1,lag=0,pl=FALSE))
+print(acf(vector1,lag=2,pl=FALSE))
+print(acf(vector1,lag=6,pl=FALSE))
+```
+

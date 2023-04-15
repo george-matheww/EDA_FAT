@@ -1,0 +1,48 @@
+---
+title: "20BRS1176_George Mathew EDA LAB3 L55+L56 slot"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+1.Our company is testing a new drug that reduces hypertension. A 
+total of 14000. individuals with high blood pressure (r= 150 mmlg, 
+SD= 10 mmlg) are given the drug for a month, and then their blood 
+pressure is measured again. The mean systolic blood pressure has 
+decreased to 144 mmitz, with a standard deviation of 9 mmHg
+```{r}
+before <- rnorm(14000, 150, 10)
+after <- rnorm(14000, 144, 9) 
+t.test(before, after,paired = TRUE)
+```
+Interpretation:
+Since the p-value is below the significance level, we may state with certainty that the new drug does lower blood pressure.
+
+2. The following table gives monthly sales (in thousand rupees) of a 
+certain firm in the 3 states by its four salesmen:
+States:           Salesman
+          I       II        III       IV
+A         6       5          3        8
+B         8       9          6        5   
+C         10      7          8        2
+Setup the analysis of variance table and test whether there is any 
+significant difference (i) between the salesmen (ii) between sales in the 
+states.
+```{r}
+A <- c(6,5,3,8)
+B <- c(8,9,6,5)
+C <- c(10,7,8,7)
+summary (aov (A~B + C))
+```
+
+```{r}
+States <- c('A', 'B', 'C')
+I <- c (6,8,10)
+II <- c (5,9,7)
+III <- c (3,6,8)
+IV <- c (8,5,7)
+df <- data.frame (States, I, II, III, IV)
+a <- aov (I ~ II + III + III)
+summary(a)
+```
+Interpretation:
+There is no reasonable difference between the states

@@ -1,0 +1,82 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+install.packages("tm")
+install.packages("wordcloud")
+install.packages("sentimentr")
+```
+
+
+```{r}
+library(ggplot2)
+library(lattice)
+library(tm)
+library(RColorBrewer)
+library(wordcloud)
+library(sentimentr)
+```
+
+```{r}
+data <- read.csv("/Users/gpega/Downloads/AmazonReviews.csv")
+data
+str(data)
+```
+```{r}
+corpus <- iconv(data$Review.Content,to = "utf-8")
+corpus <- Corpus(VectorSource(corpus))
+inspect(corpus[1:5])
+```
+
+```{r}
+corpus <- tm_map(corpus, tolower)
+corpus <- tm_map(corpus, removePunctuation)
+corpus <- tm_map(corpus, removeNumbers)
+cleanset <- tm_map(corpus, removeWords, stopwords("english")) 
+```
+
+```{r}
+inspect(cleanset[1:5])
+removeslah <- function(x) gsub('\n','',x)
+cleanset <- tm_map(cleanset,content_transformer(removeslah))
+cleanset <- tm_map(cleanset, stripWhitespace)
+```
+
+```{r}
+tdm <- TermDocumentMatrix(cleanset)
+tdm
+ 
+tdm <- as.matrix(tdm)
+tdm[1:20,1:20]
+```
+
+```{r}
+w <- rowSums(tdm)
+```
+
+```{r}
+barplot(w,
+        las = 2,
+        col = rainbow(50))
+```
+
+```{r}
+wordcloud(words = names(w),
+          freq = w,
+          colors = brewer.pal(8,'Dark2'))
+```
+
+```{r}
+sent <- sentiment(data$Review.Content)
+sent
+```
+
+```{r}
+barplot(sent$sentiment)
+```
+
+```{r}
+hist(sent$sentiment,col = "blue")
+```
+

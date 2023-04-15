@@ -1,0 +1,169 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+Question 1:
+```{r}
+install.packages('caret')
+```
+
+```{r}
+library(stats)
+data <- read.csv(("/Users/gpega/Downloads/archive (3)/diabetes.csv"))
+head(data)
+```
+
+```{r}
+data <- data.frame(Glucose= c(data$Glucose),
+                   BP=c(data$BloodPressure),
+                   Age=c(data$Age),
+                   Outcome=c(data$Outcome))
+```
+
+```{r}
+split_index <- floor(0.7 * nrow(data))
+train_data <- data[1:split_index,]
+test_data <- data[(split_index+1):nrow(data),]
+```
+
+```{r}
+logitmodel <-glm(Outcome~ Glucose + BP + Age,data = train_data,
+                                    family=binomial(link="logit"))
+summary(logitmodel)
+predictions <- predict(logitmodel,newdata=test_data,type = "response")
+```
+
+```{r}
+test_data$preds <- round(predictions)
+library(caret)
+print(test_data$Outcome)
+print(round(predictions))
+confusionMatrix(as.factor(test_data$Outcome),as.factor(test_data$preds))
+```
+
+```{r}
+library(ggplot2)
+ggplot(test_data , aes(x=Glucose,y=predictions)) +
+  geom_point()+
+  geom_smooth(method = "glm",method.args = list(family=binomial(link = "logit"))) +
+  xlab("Glucose")+
+  ylab("Predicted Probability of y")+
+  ggtitle("Logistic Regression wrt Glucose")
+```
+
+```{r}
+ggplot(test_data , aes(x=BP,y=predictions)) +
+  geom_point()+
+  geom_smooth(method = "glm",method.args = list(family=binomial(link = "logit"))) +
+  xlab("BP")+
+  ylab("Predicted Probability of y")+
+  ggtitle("Logistic Regression wrt BP")
+```
+
+```{r}
+ggplot(test_data , aes(x=Age,y=predictions)) +
+  geom_point()+
+  geom_smooth(method = "glm",method.args = list(family=binomial(link = "logit"))) +
+  xlab("Age")+
+  ylab("Predicted Probability of y")+
+  ggtitle("Logistic Regression wrt Age")
+```
+Question 2:
+
+```{R}
+install.packages("brglm")
+```
+
+```{r}
+library(brglm)
+oddsmodel <- brglm(Outcome ~Glucose + BP + Age, data = train_data, family=binomial(),link = "power", power=1)
+```
+
+```{r}
+summary(oddsmodel)
+```
+
+```{r}
+predictions <- predict(oddsmodel,newdata=test_data,type = "response")
+```
+
+```{r}
+test_data$preds <- round(predictions)
+library(caret)
+print(test_data$Outcome)
+print(round(predictions))
+confusionMatrix(as.factor(test_data$Outcome),as.factor(test_data$preds))
+```
+
+```{r}
+ggplot(test_data , aes(x=Glucose,y=predictions)) +
+  geom_point()+
+  geom_smooth(method = "brglm",method.args = list(family=binomial(),link = "power",power=1)) +
+  xlab("Glucose")+
+  ylab("Predicted Probability of y")+
+  ggtitle("Logistic Regression wrt Glucose")
+```
+
+```{r}
+ggplot(test_data , aes(x=BP,y=predictions)) +
+  geom_point()+
+  geom_smooth(method = "brglm",method.args = list(family=binomial(),link = "power",power=1)) +
+  xlab("BP")+
+  ylab("Predicted Probability of y")+
+  ggtitle("Logistic Regression wrt BP")
+```
+
+```{r}
+ggplot(test_data , aes(x=Age,y=predictions)) +
+  geom_point()+
+  geom_smooth(method = "brglm",method.args = list(family=binomial(),link = "power",power=1)) +
+  xlab("Age")+
+  ylab("Predicted Probability of y")+
+  ggtitle("Logistic Regression wrt Age")
+```
+Question 3:
+```{r}
+lr <- glm(Outcome ~ Glucose + BP + Age,data = train_data, family=binomial())
+
+summary(lr)
+
+predictions <- predict(oddsmodel,newdata = test_data,type = "response")
+
+sigmoid <-function(x){
+  1/(1+exp(-x))*100
+}
+```
+
+```{r}
+pred_probs <-sigmoid(predictions)
+plot(pred_probs,type = "l", xlab = "Predicted Values", ylab = "Probability", main="Sigmoid Function")
+```
+
+Question 4:
+```{r}
+lr <- glm(Outcome ~ Glucose + BP + Age,data = train_data, family=binomial())
+
+summary(lr)
+
+predictions <- predict(lr,newdata = test_data,type = "response")
+
+loglik <- function(y,p){
+  sum(y*log(p) + (1-y) * log(1-p))
+}
+new_vec <- c()
+```
+
+```{r}
+for(i in 1:length(predictions)){
+  num <- as.numeric(loglik(test_data$Outcome[i],predictions[i]))
+  new_vec <- c(new_vec,num)
+}
+```
+
+```{r}
+new_vec
+```
+
+
+
+

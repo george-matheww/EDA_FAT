@@ -1,0 +1,87 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+install.packages("rpart.plot")
+install.packages("randomForest")
+```
+
+```{r}
+library(caret) 
+library(rpart) 
+library(rpart.plot) 
+library(randomForest)
+```
+
+```{r}
+data = read.csv("/Users/gpega/Downloads/EmployeeData.csv")
+str(data)
+```
+
+```{r}
+#since tenure is a character type, we will extract required info and normalise it into only months.
+years = c()
+for( i in 1:length(data$Tenure)){
+  num <- substring(data$Tenure[i],1,1)
+  years[i] <- num
+}
+years <- as.integer(years)
+yearconver = c()
+for(i in 1:length(years)){
+  num <- years[[i]] * 12
+  yearconver <- c(yearconver , num)
+}
+months = c()
+for( i in 1:length(data$Tenure)){
+  num <- substring(data$Tenure[i],9,10)
+  num <- gsub(" ","",num)
+  months <- c(months,num)
+}
+months <- as.integer(months)
+Tenure <- yearconver + months
+```
+
+```{r}
+#now lets drop the Tenure column from the dataframe and add our updated tenure column
+data <- subset(data , select = -c(Tenure))
+data['Tenure'] <- Tenure
+```
+
+```{r}
+#let us convert the data into the required datatypes
+data$Grade <- as.factor(data$Grade)
+data$Branch <- as.factor(data$Branch)
+data$Department <- as.factor(data$Department)
+data$Gender <- as.factor(data$Gender)
+data$Gross.Salary <- as.integer(data$Gross.Salary)
+data$Age <- as.integer(data$Age)
+data$resigned<- as.factor((data$resigned))
+data$Tenure <- as.integer((data$Tenure))
+```
+
+```{r}
+#decision tree
+index = createDataPartition(y=data$resigned, p = .80,list = FALSE )
+traind = data[index,-7]
+testd = data[-index,-7]
+train_labelsd <- data[index , 7]
+ 
+test_labelsd <- data[-index,7]
+rtree_fit <- rpart(train_labelsd~ ., traind, method='class')
+rpart.plot(rtree_fit)
+pred_rtree <- predict(rtree_fit, testd, type= 'class')
+confusionMatrix(pred_rtree,test_labelsd)
+```
+
+```{r}
+#random forest
+index = createDataPartition(y=data$resigned, p = .80,list = FALSE )
+trainrf = data[index,-7]
+testrf = data[-index,-7]
+train_labelsrf <- data[index , 7]
+test_labelsrf <- data[-index,7]
+model_rf <- randomForest(train_labelsrf ~ ., data = trainrf, importance = TRUE)
+pred_rf <- predict(model_rf, testrf, type = "class")
+confusionMatrix(pred_rf, test_labelsrf)
+```
